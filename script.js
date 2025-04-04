@@ -57,51 +57,60 @@ function startGame() {
   }, 1000);
 }
 
-// Listen for start button click to restart the game (if clicked later)
-startButton.addEventListener('click', startGame);
-
-// Card click logic (auto-starts the game on first click)
-cards.forEach(card => {
-  card.addEventListener('click', () => {
-    // If the game hasn't started yet, start it on first card click.
-    if (!gameStarted) {
-      startGame();
-    }
-    if (lockBoard) return;
-    if (card.classList.contains('flipped')) return;
+// A helper function to process card click logic
+function handleCardClick(card) {
+  if (lockBoard) return;
+  if (card.classList.contains('flipped')) return;
+  
+  card.classList.add('flipped');
+  flippedCards.push(card);
+  
+  if (flippedCards.length === 2) {
+    lockBoard = true;
+    const firstCard = flippedCards[0];
+    const secondCard = flippedCards[1];
     
-    card.classList.add('flipped');
-    flippedCards.push(card);
-    
-    if (flippedCards.length === 2) {
-      lockBoard = true;
-      const firstCard = flippedCards[0];
-      const secondCard = flippedCards[1];
+    if (firstCard.getAttribute('data-card') === secondCard.getAttribute('data-card')) {
+      // Match found: update score and allow further moves
+      score++;
+      updateScore();
+      flippedCards = [];
+      lockBoard = false;
       
-      if (firstCard.getAttribute('data-card') === secondCard.getAttribute('data-card')) {
-        // Match found: update score and allow further moves
-        score++;
-        updateScore();
+      // Check if all pairs are matched
+      if (score === totalMatches) {
+        clearInterval(timerInterval);
+        setTimeout(() => {
+          alert(`Game over! Time taken: ${timeElapsed} seconds.`);
+          gameStarted = false;
+        }, 500);
+      }
+    } else {
+      // No match: flip the cards back after a short delay
+      setTimeout(() => {
+        firstCard.classList.remove('flipped');
+        secondCard.classList.remove('flipped');
         flippedCards = [];
         lockBoard = false;
-        
-        // Check if all pairs are matched
-        if (score === totalMatches) {
-          clearInterval(timerInterval);
-          setTimeout(() => {
-            alert(`Game over! Time taken: ${timeElapsed} seconds.`);
-            gameStarted = false;
-          }, 500);
-        }
-      } else {
-        // No match: flip the cards back after a short delay
-        setTimeout(() => {
-          firstCard.classList.remove('flipped');
-          secondCard.classList.remove('flipped');
-          flippedCards = [];
-          lockBoard = false;
-        }, 1000);
-      }
+      }, 1000);
+    }
+  }
+}
+
+// Listen for start button click to restart the game (optional)
+startButton.addEventListener('click', startGame);
+
+// Card click logic: auto-starts on first card click
+cards.forEach(card => {
+  card.addEventListener('click', () => {
+    if (!gameStarted) {
+      startGame();
+      // Use a small delay to allow startGame() to finish
+      setTimeout(() => {
+        handleCardClick(card);
+      }, 50);
+    } else {
+      handleCardClick(card);
     }
   });
 });

@@ -17,10 +17,10 @@
   box-sizing: border-box;
 }
 
-/* Center all elements in the viewport */
+/* Base body styling: center everything */
 body {
   font-family: "Open Sans", sans-serif;
-  font-size: 10rem;
+  font-size: 1rem;
   line-height: 2;
   margin: 0;
   min-height: 100vh;
@@ -29,34 +29,72 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;  /* Ensures the flying dog doesn't cause scrollbars */
 }
 
-/* Game Controls (Button + Score/Timer) */
+/* Flying Dog Animation */
+.flying-dog {
+  position: fixed;
+  width: 80px;
+  height: 80px;
+  pointer-events: none; /* So it won't block clicks */
+  z-index: -1; /* Place it behind your content */
+  animation: fly 25s linear infinite;
+}
+
+/* Keyframes for the flying dog movement */
+@keyframes fly {
+  0% {
+    top: -10%;
+    left: -10%;
+    transform: rotate(0deg);
+  }
+  25% {
+    top: 10%;
+    left: 70%;
+    transform: rotate(45deg);
+  }
+  50% {
+    top: 80%;
+    left: 80%;
+    transform: rotate(90deg);
+  }
+  75% {
+    top: 70%;
+    left: 10%;
+    transform: rotate(135deg);
+  }
+  100% {
+    top: -10%;
+    left: -10%;
+    transform: rotate(180deg);
+  }
+}
+
+/* Game Controls */
 .game-controls {
   width: 100%;
-  max-width: 600px; /* Optional: constrain width */
+  max-width: 600px;
   display: flex;
-  flex-direction: column; /* Stack button and text vertically */
+  flex-direction: column;
   align-items: center;
   margin: 20px;
   gap: 10px;
 }
 
-/* Container for score and timer text on the second row */
 .control-text {
-  margin-top: 40px;
   display: flex;
   gap: 20px;
 }
 
-/* Score & Timer Display */
 #scoreDisplay,
 #timerDisplay {
   font-size: 18px;
   color: var(--colorShadeA);
 }
 
-/* CPC button style with reduced size */
+/* CPC Button Style */
 button {
   position: relative;
   display: inline-block;
@@ -110,7 +148,7 @@ button {
   box-shadow: 0 0 0 2px var(--colorShadeB), 0 0.25em 0 0 var(--colorShadeB);
 }
 
-/* Game board container */
+/* Game Container */
 .game-container {
   margin: 0 20px 20px;
   display: grid;

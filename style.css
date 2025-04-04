@@ -44,7 +44,7 @@ body {
 
 /* Container for score and timer text on the second row */
 .control-text {
-  margin-bottom: 40px;
+  margin-top: 40px;
   display: flex;
   gap: 20px;
 }

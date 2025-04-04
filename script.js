@@ -1,4 +1,4 @@
-// Shuffle the cards randomly
+// Function to shuffle the cards randomly
 function shuffleCards() {
   const container = document.querySelector('.game-container');
   const cardsArray = Array.from(container.children);
@@ -34,7 +34,7 @@ function updateTimer() {
 
 // Start or restart the game
 function startGame() {
-  // Reset state
+  // Reset state variables
   flippedCards = [];
   lockBoard = false;
   score = 0;
@@ -43,13 +43,13 @@ function startGame() {
   updateTimer();
   gameStarted = true;
   
-  // Remove any flipped classes
+  // Remove any flipped classes from all cards
   cards.forEach(card => card.classList.remove('flipped'));
   
-  // Shuffle cards
+  // Shuffle the cards for a new game
   shuffleCards();
   
-  // Clear any existing timer and start a new one
+  // Clear any previous timer and start a new one
   clearInterval(timerInterval);
   timerInterval = setInterval(() => {
     timeElapsed++;
@@ -57,13 +57,13 @@ function startGame() {
   }, 1000);
 }
 
-// Listen for start button click
+// Listen for button click to restart the game
 startButton.addEventListener('click', startGame);
 
 // Card click logic
 cards.forEach(card => {
   card.addEventListener('click', () => {
-    if (!gameStarted) return;
+    if (!gameStarted) return; // Game not started
     if (lockBoard) return;
     if (card.classList.contains('flipped')) return;
     
@@ -76,13 +76,13 @@ cards.forEach(card => {
       const secondCard = flippedCards[1];
       
       if (firstCard.getAttribute('data-card') === secondCard.getAttribute('data-card')) {
-        // Match found
+        // Match found: update score
         score++;
         updateScore();
         flippedCards = [];
         lockBoard = false;
         
-        // Check if all pairs matched
+        // If game complete, stop the timer and alert
         if (score === totalMatches) {
           clearInterval(timerInterval);
           setTimeout(() => {
@@ -91,7 +91,7 @@ cards.forEach(card => {
           }, 500);
         }
       } else {
-        // Not a match: flip back
+        // No match: flip the cards back after a short delay
         setTimeout(() => {
           firstCard.classList.remove('flipped');
           secondCard.classList.remove('flipped');
@@ -102,4 +102,3 @@ cards.forEach(card => {
     }
   });
 });
-

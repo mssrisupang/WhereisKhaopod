@@ -57,13 +57,16 @@ function startGame() {
   }, 1000);
 }
 
-// Listen for button click to restart the game
+// Listen for start button click to restart the game (if clicked later)
 startButton.addEventListener('click', startGame);
 
-// Card click logic
+// Card click logic (auto-starts the game on first click)
 cards.forEach(card => {
   card.addEventListener('click', () => {
-    if (!gameStarted) return; // Game not started
+    // If the game hasn't started yet, start it on first card click.
+    if (!gameStarted) {
+      startGame();
+    }
     if (lockBoard) return;
     if (card.classList.contains('flipped')) return;
     
@@ -76,13 +79,13 @@ cards.forEach(card => {
       const secondCard = flippedCards[1];
       
       if (firstCard.getAttribute('data-card') === secondCard.getAttribute('data-card')) {
-        // Match found: update score
+        // Match found: update score and allow further moves
         score++;
         updateScore();
         flippedCards = [];
         lockBoard = false;
         
-        // If game complete, stop the timer and alert
+        // Check if all pairs are matched
         if (score === totalMatches) {
           clearInterval(timerInterval);
           setTimeout(() => {
